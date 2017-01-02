@@ -1,38 +1,43 @@
 var express = require('express')
 var app = express();
+var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var port = 3000;
+var session = require('express-session');
 
+var port = 3000;
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
 // Database
-//var connection = require('./mysql_connection');
+var database_file = 'cnline.db';
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database(database_file);
 
-// Set frontend path
+db.serialize(function() {
+  db.run("CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(50), password varchar(64))");
+});
+
+// Set environment
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Routing
-app.get('/login', function(req, res) {
-  res.render('login', { title: 'login' });
-});
-app.get('/register', function(req, res) {
-  res.render('register', { title: 'register' });
-});
-app.get('/chat', function(req, res){
-  res.render('chat', { title: 'chat' });
-});
+var login = require('./routes/login');
+app.use('/login', login);
 
-app.post('/register', function(req, res, next) {
-  var username = req.body.username;
-  var password = req.body.password;
-  var query = 'INSERT INTO users (username, password) VALUES ("' + username + '", ' + '"' + password + '")';
-  connection.query(query, function(error, rows, fields) {
-  });
-});
+var register = require('./routes/register');
+app.use('/register', register);
+
+var chat = require('./routes/chat');
+app.use('/chat', chat);
 
 io.on('connection', function(){ /* … */ });

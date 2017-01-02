@@ -1,11 +1,16 @@
 <%include header%>
 <body>
-  <p align="center">CNLine<br>
-                    帳號:&nbsp;<input type="text" name="username"><br>
-                    密碼:&nbsp;<input type="password" name="password"><br>
-                    <input type='checkbox' name='auto_login' value='123'>自動登入<br>
-                    <input type='submit' value='確定' onclick="location.href='/chat'">
-                    <input type="button" value="註冊" onclick="location.href='/register'" /></p>
+  <p align="center">CNLine</p>
+    <form align="center" action="/login" method="post">
+        帳號:&nbsp;<input type="text" name="username"><br>
+        密碼:&nbsp;<input type="password" name="password"><br>
+        <input type='checkbox' name='auto_login'>自動登入<br>
+        <input type='submit' value='確定' onclick="location.href='/chat'">
+        <input type="button" value="註冊" onclick="location.href='/register'" />
+    </form>
+    <text id="message"><%=message%></text>
+  
+                    
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
