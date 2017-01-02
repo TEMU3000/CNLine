@@ -1,13 +1,29 @@
-<%include header%>
+< %include header% >
 <head>
   <link rel=stylesheet type="text/css" href="chat.css">
 </head>
-<div class="top">
-    TOP
-</div>
-<div class="left">
-    LEFT
-</div>
-<div class="main">
-    MAIN
-</div>
+<body>
+    <div class="top">
+        <span style="float: left;">< %= username % ></span>
+        <span style="font-size: 48">CNLine</span>
+        <span style="float: right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/logout'"></span>
+    </div>
+    <div class="left">
+        <table width="100%">
+            <tr><td class="td_name_odd" onclick=openRoom(this)><b>林庭宇</b></td></tr>
+            <tr><td class="td_name_even" onclick=openRoom(this)><b>賴岳群</b></td></tr>
+            <tr><td class="td_name_odd" style="color:#888888" onclick=openRoom(this)>陳力宇</td></tr>
+        </table>
+    </div>
+    <div class="main">
+        <table>
+            <tr><td>JoJo: YO</td></tr>
+            <tr><td>Bear: HE</td></tr>
+        </table>
+    </div>
+    <script>
+        function openRoom(name) {
+            alert(name.innerHTML);
+        }
+    </script>
+</body>
