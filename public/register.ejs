@@ -1,28 +1,54 @@
 <%include header%>
 <body>
-  <p align="center">註冊CNLine<br>
-                    帳號:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="username2"><br>
-                    密碼:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="password"><br>
-                    <text id="spaces"></text>
-                    確認密碼:&nbsp;<input type="password" id="confirm_password">
-                    <text id="alertPasswordMatch"></text><br>
-                    <input type='submit' value='確定' name='Send' onclick="checkPassword()">
-                    <input type="button" value="取消" onclick="location.href='/login'" /></p>
-
+  <p align="center">註冊CNLine</p>
+    <form align="center" action="/login" method="post">
+        &nbsp;帳號:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" name="username" id="username" maxlength="50"
+        onchange   = "checkPassword();"
+        onkeypress = "this.onchange();"
+        onpaste    = "this.onchange();"
+        oninput    = "this.onchange();">
+        
+        <text id="duplicate"></text><br>
+        
+        密碼:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="password" name="password" id="password"
+        onchange   = "checkPassword();"
+        onkeypress = "this.onchange();"
+        onpaste    = "this.onchange();"
+        oninput    = "this.onchange();"><br>
+        
+        <text id="spaces"></text>
+        確認密碼:&nbsp;
+        <input type="password" id="confirm_password"
+        onchange   = "checkPassword();"
+        onkeypress = "this.onchange();"
+        onpaste    = "this.onchange();"
+        oninput    = "this.onchange();">
+        <text id="alertPasswordMatch"></text><br>
+        
+        <input type='submit' value='確定' id='submit' disabled='true'>
+        <input type="button" value="取消" onclick="location.href='/login'" />
+    </form>
+    
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     function checkPassword() {
-        var username = $("#username2").val();
+        var username = $("#username").val();
         var password = $("#password").val();
         var confirmPassword = $("#confirm_password").val();
         if (password != confirmPassword){
             $("#alertPasswordMatch").html("Passwords do not match!");
             $("#spaces").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.getElementById("submit").disabled = true;
         } else {
             $("#alertPasswordMatch").html("");
             $("#spaces").html("");
-            
+            document.getElementById("submit").disabled = false;
+        }
+        if(username === "" || password === "" || confirmPassword === ""){
+            document.getElementById("submit").disabled = true;
         }
     }
   </script>
