@@ -3,13 +3,19 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = 3000;
+var database_file = 'cnline.db';
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
 // Database
-var connection = require('./mysql_connection');
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database(database_file);
+
+db.serialize(function() {
+  db.run("CREATE TABLE IF NOT EXISTS  users (username varchar(50),password varchar(64))");
+});
 
 // Set frontend path
 app.use(express.static(__dirname + '/public'));
