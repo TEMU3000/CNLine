@@ -6,14 +6,30 @@
 </head>
 <body>
   <p align="center">註冊CNLine<br>
-                    帳號:&nbsp;<input type="text" name="username"><br>
-                    密碼:&nbsp;<input type="password" name="password"><br>
-                    確認密碼:&nbsp;<input type="password" name="confirm_password"><br>
-                    <input type='submit' value='確定' name='Send'>
+                    帳號:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="username"><br>
+                    密碼:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="password"><br>
+                    <text id="spaces"></text>
+                    確認密碼:&nbsp;<input type="password" id="confirm_password">
+                    <text id="alertPasswordMatch"></text><br>
+                    <input type='submit' value='確定' name='Send' onclick="checkPassword()">
                     <input type="button" value="取消" onclick="location.href='/'" /></p>
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/main.js"></script>
+  <script>
+    function checkPassword() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var confirmPassword = $("#confirm_password").val();
+        if (password != confirmPassword){
+            $("#alertPasswordMatch").html("Passwords do not match!");
+            $("#spaces").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        } else {
+            $("#alertPasswordMatch").html("");
+            $("#spaces").html("");
+            
+        }
+    }
+  </script>
 </body>
 </html>
