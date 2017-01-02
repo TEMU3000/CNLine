@@ -31,7 +31,7 @@ app.get('/login', function(req, res) {
   res.render('login', { title: 'login' });
 });
 app.get('/register', function(req, res) {
-  res.render('register', { title: 'register' });
+  res.render('register', { title: 'register', message: '' });
 });
 app.get('/chat', function(req, res){
   res.render('chat', { title: 'chat' });
