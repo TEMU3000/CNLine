@@ -19,7 +19,8 @@ db.serialize(function() {
   db.run("CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(50), password varchar(64))");
 });
 
-// Set frontend path
+// Set environment
+app.use(require(body-parser));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
