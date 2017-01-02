@@ -36,14 +36,14 @@ app.get('/chat', function(req, res){
 });
 
 app.post('/register', function(req, res, next) {
+  var message = '';
   var username = req.body.username;
   var password = md5(req.body.password);
-  var query = 'SELECT username, password FROM users WHERE username like "' + username + "'";
+  var query = 'SELECT username, password FROM users WHERE username = ?';
   var not_exist = false;
   db.serialize(function() {
-    db.all(query, function(err, rows) {
+    db.all(query, username, function(err, rows) {
       if (!err) {
-        console.log(rows);
         if (rows.length == 0)
           not_exist = true;
       } else {
@@ -53,10 +53,13 @@ app.post('/register', function(req, res, next) {
   });
 
   if (not_exist) {
-    var query = 'INSERT INTO users (username, password) VALUES ("' + username + '", ' + '"' + password + '")';
+    var query = 'INSERT INTO users (username, password) VALUES (?, ?)';
     db.serialize(function() {
-      db.run(query);
+      db.run(query, [username, password]);
     });
+  } else {
+    message = 'Failed: username existed!';
+    res.render('register', { title: 'register', message: message });
   }
 });
 
