@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var session = require('express-session');
 var md5 = require('md5');
 
 var port = 3000;
@@ -25,32 +26,25 @@ app.use(bodyParser());
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Routing
 app.get('/login', function(req, res) {
+  req.session.destroy();
   res.render('login', { title: 'login', message: '' });
 });
 app.get('/register', function(req, res) {
   res.render('register', { title: 'register', message: '' });
 });
 app.get('/chat', function(req, res){
-  res.render('chat', { title: 'chat' });
-});
-
-var username = 'test';
-var password = md5('123');
-var query = 'SELECT id, username, password FROM users WHERE username = ?';
-var not_exist = false;
-db.serialize(function() {
-  db.each(query, username, function(err, row) {
-    if (!err) {
-      console.log(row);
-      if (password == row.password)
-        console.log('right');
-    } else {
-      console.log(err);
-    }
-  });
+  if (req.session.u_id)
+    res.render('chat', { title: 'chat' });
+  else
+    res.redirect('login');
 });
 
 app.post('/login', function(req, res, next) {
@@ -58,24 +52,20 @@ app.post('/login', function(req, res, next) {
   var username = req.body.username;
   var password = md5(req.body.password);
   var query = 'SELECT id, username, password FROM users WHERE username = ?';
-  var success = false;
   db.serialize(function() {
     db.each(query, username, function(err, row) {
       if (!err) {
         if (password == row.password) {
-          success = true;
+          req.session.u_id = row.id;
+          res.redirect('chat');
+        } else {
+          res.render('login', { title: 'login', message: 'Wrong username or password.' });
         }
       } else {
         console.log(err);
       }
     });
   });
-
-  if (success) {
-
-  } else {
-    res.render('login', { title: 'login', message: 'Wrong username or password.' })
-  }
 });
 app.post('/register', function(req, res, next) {
   var message = '';
