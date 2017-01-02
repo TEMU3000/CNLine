@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>CNLine</title>
-</head>
+<%include header%>
 <body>
   <p align="center">註冊CNLine<br>
                     帳號:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="username"><br>
@@ -12,10 +7,10 @@
                     確認密碼:&nbsp;<input type="password" id="confirm_password">
                     <text id="alertPasswordMatch"></text><br>
                     <input type='submit' value='確定' name='Send' onclick="checkPassword()">
-                    <input type="button" value="取消" onclick="location.href='/'" /></p>
+                    <input type="button" value="取消" onclick="location.href='/login'" /></p>
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <!--<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>-->
   <script>
     function checkPassword() {
         var username = $("#username").val();
