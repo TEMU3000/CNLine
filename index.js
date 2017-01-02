@@ -12,11 +12,11 @@ app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
 
 // Routing
-app.get('/', function(req, res){
-  res.render('login', {title: 'login'});
+app.get('/login', function(req, res){
+  res.render('login', { title: 'login' });
 });
 app.get('/register', function(req, res){
-  res.render('register', {title: 'register'});
+  res.render('register', { title: 'register' });
 })
 
 io.on('connection', function(){ /* … */ });
