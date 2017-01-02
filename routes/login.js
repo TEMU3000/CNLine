@@ -30,6 +30,7 @@ router.post('/', function(req, res, next) {
         console.log(err);
       }
     });
+    res.render('login', { title: 'login', message: 'Wrong username or password.' });
   });
 });
 
