@@ -16,7 +16,7 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(database_file);
 
 db.serialize(function() {
-  db.run("CREATE TABLE IF NOT EXISTS  users (username varchar(50),password varchar(64))");
+  db.run("CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(50), password varchar(64))");
 });
 
 // Set frontend path
@@ -38,10 +38,26 @@ app.get('/chat', function(req, res){
 app.post('/register', function(req, res, next) {
   var username = req.body.username;
   var password = md5(req.body.password);
-  var query = 'INSERT INTO users (username, password) VALUES ("' + username + '", ' + '"' + password + '")';
+  var query = 'SELECT username, password FROM users WHERE username like "' + username + "'";
+  var not_exist = false;
   db.serialize(function() {
-    db.run(query);
+    db.all(query, function(err, rows) {
+      if (!err) {
+        console.log(rows);
+        if (rows.length == 0)
+          not_exist = true;
+      } else {
+        console.log(err);
+      }
+    });
   });
+
+  if (not_exist) {
+    var query = 'INSERT INTO users (username, password) VALUES ("' + username + '", ' + '"' + password + '")';
+    db.serialize(function() {
+      db.run(query);
+    });
+  }
 });
 
 io.on('connection', function(){ /* … */ });
