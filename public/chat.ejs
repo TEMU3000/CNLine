@@ -6,12 +6,18 @@
     <div class="top">
         <span style="float: left;">< %= username % ></span>
         <span style="font-size: 48">CNLine</span>
-        <span style="float: right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/logout'"></span>
+        <span style="float: right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/login'"></span>
     </div>
     <div class="left">
         <table width="100%">
-            <tr><td class="td_name_odd" onclick=openRoom(this)><b>林庭宇</b></td></tr>
-            <tr><td class="td_name_even" onclick=openRoom(this)><b>賴岳群</b></td></tr>
+            <% for( var idx = 0; idx < userlist.length; idx++) { %>
+                <% if(idx % 2 === 0) { %>
+                    <tr><td class="td_name_odd" onclick=openRoom(this)><b><%= userlist[idx].username %></b></td></tr>
+                <% } %>
+                <% if(idx % 2 === 1) { %>
+                    <tr><td class="td_name_even" onclick=openRoom(this)><b><%= userlist[idx].username %></b></td></tr>
+                <% } %>
+            <% } %>
             <tr><td class="td_name_odd" style="color:#888888" onclick=openRoom(this)>陳力宇</td></tr>
         </table>
     </div>
