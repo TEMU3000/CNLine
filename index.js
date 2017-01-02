@@ -28,7 +28,7 @@ app.set('view engine', 'ejs');
 
 // Routing
 app.get('/login', function(req, res) {
-  res.render('login', { title: 'login' });
+  res.render('login', { title: 'login', message: '' });
 });
 app.get('/register', function(req, res) {
   res.render('register', { title: 'register', message: '' });
@@ -37,11 +37,51 @@ app.get('/chat', function(req, res){
   res.render('chat', { title: 'chat' });
 });
 
+var username = 'test';
+var password = md5('123');
+var query = 'SELECT id, username, password FROM users WHERE username = ?';
+var not_exist = false;
+db.serialize(function() {
+  db.each(query, username, function(err, row) {
+    if (!err) {
+      console.log(row);
+      if (password == row.password)
+        console.log('right');
+    } else {
+      console.log(err);
+    }
+  });
+});
+
+app.post('/login', function(req, res, next) {
+  var message = '';
+  var username = req.body.username;
+  var password = md5(req.body.password);
+  var query = 'SELECT id, username, password FROM users WHERE username = ?';
+  var success = false;
+  db.serialize(function() {
+    db.each(query, username, function(err, row) {
+      if (!err) {
+        if (password == row.password) {
+          success = true;
+        }
+      } else {
+        console.log(err);
+      }
+    });
+  });
+
+  if (success) {
+
+  } else {
+    res.render('login', { title: 'login', message: 'Wrong username or password.' })
+  }
+});
 app.post('/register', function(req, res, next) {
   var message = '';
   var username = req.body.username;
   var password = md5(req.body.password);
-  var query = 'SELECT username, password FROM users WHERE username = ?';
+  var query = 'SELECT username FROM users WHERE username = ?';
   var not_exist = false;
   db.serialize(function() {
     db.all(query, username, function(err, rows) {
@@ -59,6 +99,7 @@ app.post('/register', function(req, res, next) {
     db.serialize(function() {
       db.run(query, [username, password]);
     });
+    res.render('login', { title: 'login', message: 'Registed.' });
   } else {
     message = 'Failed: username existed!';
     res.render('register', { title: 'register', message: message });
