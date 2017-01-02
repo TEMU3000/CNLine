@@ -2,6 +2,8 @@ var express = require('express')
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var md5 = require('md5');
+
 var port = 3000;
 var database_file = 'cnline.db';
 
@@ -32,9 +34,10 @@ app.get('/register', function(req, res) {
 
 app.post('/register', function(req, res, next) {
   var username = req.body.username;
-  var password = req.body.password;
+  var password = md5(req.body.password);
   var query = 'INSERT INTO users (username, password) VALUES ("' + username + '", ' + '"' + password + '")';
-  connection.query(query, function(error, rows, fields) {
+  db.serialize(function() {
+    db.run(query);
   });
 });
 
