@@ -72,28 +72,24 @@ app.post('/register', function(req, res, next) {
   var username = req.body.username;
   var password = md5(req.body.password);
   var query = 'SELECT username FROM users WHERE username = ?';
-  var not_exist = false;
   db.serialize(function() {
     db.all(query, username, function(err, rows) {
       if (!err) {
-        if (rows.length == 0)
+        if (rows.length == 0) {
           not_exist = true;
+          var query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+          db.serialize(function() {
+            db.run(query, [username, password]);
+          });
+          res.render('login', { title: 'login', message: 'Registed.' });
+        } else {
+          res.render('register', { title: 'register', message: 'Failed: username existed!' });
+        }
       } else {
         console.log(err);
       }
     });
   });
-
-  if (not_exist) {
-    var query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-    db.serialize(function() {
-      db.run(query, [username, password]);
-    });
-    res.render('login', { title: 'login', message: 'Registed.' });
-  } else {
-    message = 'Failed: username existed!';
-    res.render('register', { title: 'register', message: message });
-  }
 });
 
 io.on('connection', function(){ /* … */ });
