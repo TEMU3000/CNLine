@@ -7,12 +7,16 @@ server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
+// Set frontend path
+app.set('views', __dirname + '/public');
+app.set('view engine', 'ejs');
+
 // Routing
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/login.html');
+  res.render('login', {title: 'login'});
 });
 app.get('/register', function(req, res){
-  res.sendFile(__dirname + '/public/register.html')
+  res.render('register', {title: 'register'});
 })
 
 io.on('connection', function(){ /* … */ });
