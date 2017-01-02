@@ -20,7 +20,7 @@ db.serialize(function() {
 });
 
 // Set environment
-app.use(require(body-parser));
+app.use(require('body-parser'));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
