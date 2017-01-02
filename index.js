@@ -31,6 +31,9 @@ app.get('/login', function(req, res) {
 app.get('/register', function(req, res) {
   res.render('register', { title: 'register' });
 });
+app.get('/chat', function(req, res){
+  res.render('chat', { title: 'chat' });
+});
 
 app.post('/register', function(req, res, next) {
   var username = req.body.username;
