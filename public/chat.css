@@ -13,6 +13,6 @@
         left:178px; top:92px; right:0; bottom:0;
     }
 
-.top { background: blue; }
-.left { background: red; }
-.main { background: yellow; }
+.top { background: #C1FDF8; }
+.left { background: #B1EDE8; }
+.main { background: #EEEEEE; }

@@ -9,7 +9,7 @@ server.listen(port, function () {
 });
 
 // Database
-var connection = require('./mysql_connection');
+//var connection = require('./mysql_connection');
 
 // Set frontend path
 app.use(express.static(__dirname + '/public'));
