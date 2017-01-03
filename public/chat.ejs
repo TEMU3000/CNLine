@@ -5,26 +5,33 @@
 <body>
     <div class="top">
         <span style="float: left;">< %= username % ></span>
-        <span style="font-size: 48">CNLine</span>
+        <span style="font-size: 48; font-family:Cursive;">CNLine</span>
         <span style="float: right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/login'"></span>
     </div>
     <div class="left">
         <table width="100%">
             <% for( var idx = 0; idx < userlist.length; idx++) { %>
                 <% if(idx % 2 === 0) { %>
-                    <tr><td class="td_name_odd" onclick=openRoom(this)><b><%= userlist[idx].username %></b></td></tr>
+                    <tr><td class="name_even name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
                 <% } %>
                 <% if(idx % 2 === 1) { %>
-                    <tr><td class="td_name_even" onclick=openRoom(this)><b><%= userlist[idx].username %></b></td></tr>
+                    <tr><td class="name_odd name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
                 <% } %>
             <% } %>
-            <tr><td class="td_name_odd" style="color:#888888" onclick=openRoom(this)>陳力宇</td></tr>
+            <tr><td class="name_odd name_offline" onclick=openRoom(this)>陳力宇</td></tr>
         </table>
     </div>
     <div class="main">
-        <table>
+        <table style="padding-left: 50px; overflow: auto;">
             <tr><td>JoJo: YO</td></tr>
             <tr><td>Bear: HE</td></tr>
+        </table>
+        <table style="height:30px; width:100%; position:absolute; bottom:10px;">
+            <tr>
+                <td><input type="button" value="檔案" style="font-size:20; "></td>
+                <td style="width:100%;"><input type="text" style="width:100%; font-size:20;"></td>
+                <td style="padding-right:10px;"><input type="button" value="傳送" style="font-size:20; "></td>
+            </tr>
         </table>
     </div>
     <script>
