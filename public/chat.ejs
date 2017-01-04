@@ -12,7 +12,7 @@
         <table width="100%">
             <% for( var idx = 0; idx < userlist.length; idx++) { %>
                 <% if(idx % 2 === 0) { %>
-                    <tr><td class="name_even name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_even name_online"  onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
                 <% } %>
                 <% if(idx % 2 === 1) { %>
                     <tr><td class="name_odd name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
@@ -44,8 +44,12 @@
     <script>
         var socket = io();
         function openRoom(group) {
+            if($("#roomName").text() == group.innerHTML){
+                return;
+            }
             $("#roomName").text(group.innerHTML);
             $("#chatRoom").hide();
+            $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
         }
         $("#message").keydown( function(event){

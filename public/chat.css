@@ -33,6 +33,7 @@ td.name_odd {
 }
 td.name_online {
     font-weight:bold;
+    cursor: pointer;
 }
 td.name_offline {
     color:#888888; 
