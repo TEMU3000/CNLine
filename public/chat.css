@@ -17,6 +17,7 @@
 .main {
     position: absolute;
     left:180px; top:93px; right:0; bottom:0;
+    display: none;
 }
 td.name_even {
     background-color:#EEEEEE; 
@@ -36,6 +37,23 @@ td.name_online {
 td.name_offline {
     color:#888888; 
     font-weight:lighter;
+}
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    width: 50px;
+    margin: 5px;
+    border: 2px ridge;
+    font-size: 20;
+    text-align: center;
+}
+input.upload {
+    position: absolute;
+    top: 0; 
+    bottom: 0; 
+    right: 0;
+    padding: 0;
+    cursor: pointer;
 }
 
 .top { background: #C1FDF8; }
