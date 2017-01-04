@@ -62,6 +62,13 @@
                         )
                     )
                 );
+                var new_message = {
+                    from: $("#user").text(),
+                    to: $("#roomName").text(),
+                    msg: $("#message").val()
+                };
+                //console.log(new_message);
+                socket.emit('new message', new_message);
                 $("#message").val("");
             }
         }
