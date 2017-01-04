@@ -1,10 +1,10 @@
-< %include header% >
+<%include header%>
 <head>
   <link rel=stylesheet type="text/css" href="chat.css">
 </head>
 <body>
     <div class="top">
-        <span id="user" style="float: left;">< %= username % ></span>
+        <span id="user" style="float: left;"><%= username %></span>
         <span style="font-size: 48; font-family:Cursive;">CNLine</span>
         <span style="float: right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/login'"></span>
     </div>
@@ -40,7 +40,9 @@
         </table>
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        var socket = io();
         function openRoom(group) {
             $("#roomName").text(group.innerHTML);
             $("#chatRoom").hide();

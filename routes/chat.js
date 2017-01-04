@@ -8,10 +8,17 @@ var db = new sqlite3.Database(database_file);
 
 router.get('/', function(req, res){
   if (req.session.u_id) {
+    var idQuery = 'SELECT username FROM users WHERE id = ?';
+    var username;
+    db.serialize(function() {
+      db.all(idQuery, req.session.u_id, function(err, row) {
+        username = row[0].username;
+      });
+    });
     var query = 'SELECT username FROM users';
     db.serialize(function() {
       db.all(query, function(err, rows) {
-        res.render('chat', { title: 'chat', userlist: rows });
+        res.render('chat', { title: 'chat', userlist: rows , username: username});
       });
     });
   } else {
