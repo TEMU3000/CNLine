@@ -18,10 +18,10 @@
                     <tr><td class="name_odd name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
                 <% } %>
             <% } %>
-            <tr><td class="name_odd name_offline" onclick=openRoom(this)>陳力宇</td></tr>
         </table>
     </div>
-    <div class="main">
+    <div class="main" id="chatRoom" style="display:none">
+        <div id="roomName" style="height:30px; width:100%; border-bottom:2px solid; text-align:center; font-size:20"></div>
         <table style="padding-left: 50px; overflow: auto;">
             <tr><td>JoJo: YO</td></tr>
             <tr><td>Bear: HE</td></tr>
@@ -34,9 +34,12 @@
             </tr>
         </table>
     </div>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script>
-        function openRoom(name) {
-            alert(name.innerHTML);
+        function openRoom(group) {
+            $("#roomName").text(group.innerHTML);
+            $("#chatRoom").hide();
+            $("#chatRoom").show("fast");
         }
     </script>
 </body>
