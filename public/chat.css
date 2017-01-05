@@ -3,7 +3,7 @@
         left:0; top:0; right:0;
         height: 70px;
         border-bottom: 2px solid;
-        padding: 10px;
+        padding: 10px 20px 10px 20px;
         text-align: center;
         line-height: 70px;
     }
@@ -45,7 +45,7 @@ td.name_offline {
     width: 50px;
     margin: 5px;
     border: 2px ridge;
-    font-size: 20;
+    font-size: 1.25em;
     text-align: center;
 }
 input.upload {
@@ -55,6 +55,7 @@ input.upload {
     right: 0;
     padding: 0;
     cursor: pointer;
+    opacity: 0;
 }
 
 .top { background: #C1FDF8; }
