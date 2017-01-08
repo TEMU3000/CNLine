@@ -90,3 +90,12 @@ io.on('connection', function(socket) {
     }
   });
 });
+
+/*io.on('new message', function(socket) {
+  var msg = {
+    id: socket.to,
+    sender: ,
+    msg: socket.msg
+  };
+  socket.broadcast.emit('broadcast msg',);
+}*/
