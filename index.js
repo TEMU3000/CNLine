@@ -50,7 +50,11 @@ io.on('connection', function(socket) {
   console.log('socket.id = ' + socket.id);
   user_connected[socket.handshake.session.u_id] = true;
   user_socket_id[socket.handshake.session.u_id] = socket.id;
+
   socket.broadcast.emit('online', socket.handshake.session.u_id);
+  for k in Object.keys(user_connected) {
+    socket.emit('online', k);
+  }
 
   socket.on('disconnect', function(){
     console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
