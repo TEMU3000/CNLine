@@ -68,6 +68,21 @@ io.on('connection', function(socket) {
     }
   });
 
+  socket.on('open room', function(data)) {
+    var id1, id2;
+    if (socket.handshake.session.u_id < ) {
+      id1 = socket.handshake.session.u_id;
+      id2 = data[''];
+    } else {
+      id1 = ;
+      id2 = socket.handshake.session.u_id;
+    }
+
+    db.serialize(function() {
+      db.run("CREATE TABLE IF NOT EXISTS " +  + " (id integer primary key, msg varchar(320))");
+    });
+  }
+
   socket.on('new message', function(data) {
     var to_socket_id = user_socket_id[data['to']];
     if (to_socket_id) {
