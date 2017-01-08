@@ -21,7 +21,7 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(database_file);
 
 db.serialize(function() {
-  db.run("CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(50), password varchar(64))");
+  db.run('CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(50), password varchar(64))');
 });
 
 // Set environment
@@ -44,6 +44,17 @@ app.use('/chat', chat);
 
 user_connected = {};
 user_socket_id = {};
+
+function create_table_name(id1, id2) {
+  var table_name;
+  if (id1 < id2) {
+    table_name = id1 + '_' + id2;
+  } else {
+    table_name = id2 + '_' + id1;
+  }
+
+  return table_name;
+}
 
 io.on('connection', function(socket) {
   if (socket.handshake.session.u_id) {
@@ -68,34 +79,29 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('open room', function(data)) {
-    var id1, id2;
-    if (socket.handshake.session.u_id < ) {
-      id1 = socket.handshake.session.u_id;
-      id2 = data[''];
-    } else {
-      id1 = ;
-      id2 = socket.handshake.session.u_id;
-    }
+  socket.on('open room', function(uid) {
+    var table_name = create_table_name(socket.handshake.session.u_id, uid);
 
     db.serialize(function() {
-      db.run("CREATE TABLE IF NOT EXISTS " +  + " (id integer primary key, msg varchar(320))");
+      db.run('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id integer primary key, msg varchar(320))');
+
+      var query = 'SELECT msg FROM ' + table_name;
+      db.all(query, function(err, rows) {
+        socket.emit('log response', { uid: uid, log_msg: rows })
+      });
     });
-  }
+  });
 
   socket.on('new message', function(data) {
     var to_socket_id = user_socket_id[data['to']];
     if (to_socket_id) {
       socket.broadcast.to(to_socket_id).emit('broadcast msg', { sender_id: socket.handshake.session.u_id, msg: data['msg'] });
     }
+
+    var table_name = create_table_name(socket.handshake.session.u_id, data['to']);
+    var query = 'INSERT INTO ' + table_name + ' (msg) VALUES (?)';
+    db.serialize(function() {
+      db.run(query, [data['msg']]);
+    });
   });
 });
-
-/*io.on('new message', function(socket) {
-  var msg = {
-    id: socket.to,
-    sender: ,
-    msg: socket.msg
-  };
-  socket.broadcast.emit('broadcast msg',);
-}*/
