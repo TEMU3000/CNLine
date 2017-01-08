@@ -12,10 +12,10 @@
         <table width="100%">
             <% for( var idx = 0; idx < userlist.length; idx++) { %>
                 <% if(idx % 2 === 0) { %>
-                    <tr><td class="name_even name_online"  onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_even name_online"  onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
                 <% if(idx % 2 === 1) { %>
-                    <tr><td class="name_odd name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_odd name_online" onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
             <% } %>
         </table>
@@ -44,6 +44,7 @@
     <script>
         var socket = io();
         function openRoom(group) {
+            console.log(group.id);
             if($("#roomName").text() == group.innerHTML){
                 return;
             }
