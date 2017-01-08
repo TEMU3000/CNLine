@@ -46,14 +46,16 @@ user_connected = {};
 user_socket_id = {};
 
 io.on('connection', function(socket) {
-  console.log('user ' + socket.handshake.session.u_id + ' has connected.');
-  console.log('socket.id = ' + socket.id);
-  user_connected[socket.handshake.session.u_id] = true;
-  user_socket_id[socket.handshake.session.u_id] = socket.id;
+  if (socket.handshake.session.u_id) {
+    console.log('user ' + socket.handshake.session.u_id + ' has connected.');
+    console.log('socket.id = ' + socket.id);
+    user_connected[socket.handshake.session.u_id] = true;
+    user_socket_id[socket.handshake.session.u_id] = socket.id;
 
-  socket.broadcast.emit('online', socket.handshake.session.u_id);
-  for (k in Object.keys(user_connected)) {
-    socket.emit('online', k);
+    socket.broadcast.emit('online', socket.handshake.session.u_id);
+    for (var key in user_connected) {
+      socket.emit('online', key);
+    }
   }
 
   socket.on('disconnect', function(){
