@@ -12,10 +12,10 @@
         <table width="100%">
             <% for( var idx = 0; idx < userlist.length; idx++) { %>
                 <% if(idx % 2 === 0) { %>
-                    <tr><td class="name_even name_online"  onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_even name_online"  onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
                 <% if(idx % 2 === 1) { %>
-                    <tr><td class="name_odd name_online" onclick=openRoom(this)><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_odd name_online" onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
             <% } %>
         </table>
@@ -43,7 +43,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
+        var opened_id = -1;
         function openRoom(group) {
+            console.log(group.id);
+            opened_id = group.id;
             if($("#roomName").text() == group.innerHTML){
                 return;
             }
@@ -61,20 +64,30 @@
             if ($("#message").val() != "") {
                 $("#chatContent").append(
                     $("<tr>").append(
-                        $("<td>").append(
+                        $("<td>").text(
                             $("#user").text() + ": " + $("#message").val()
                         )
                     )
                 );
                 var new_message = {
-                    from: $("#user").text(),
-                    to: $("#roomName").text(),
+                    to: opened_id,
                     msg: $("#message").val()
                 };
-                //console.log(new_message);
+                console.log(new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
             }
         }
+        socket.on('broadcast msg', function (data) {
+            if(data.id == opened_id && data.sender != $("#user")){
+                $("#chatContent").append(
+                        $("<tr>").append(
+                            $("<td>").append(
+                                data.sender + ": " + data.msg
+                            )
+                        )
+                    );
+            }
+        });
     </script>
 </body>

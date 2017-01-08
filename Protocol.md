@@ -2,7 +2,26 @@
 ## Send message
 Client send an object
 ```bash
-from: (username1),
-to: (username2),
-msg: (msg)
+  new message{
+    to: (destination_userid),
+    msg: (msg)
+  }
+```
+
+Server send an object
+```bash
+  broadcast msg{
+    id,
+    sender,
+    msg
+  }
+```
+
+## On client connect
+Server send a list
+```bash
+  userlist[]{
+    id,
+    username
+  }
 ```
