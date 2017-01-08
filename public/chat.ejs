@@ -82,7 +82,7 @@
             if(data.id == opened_id && data.sender != $("#user")){
                 $("#chatContent").append(
                     $("<tr>").append(
-                        $("<td>").append(
+                        $("<td>").text(
                             data.sender + ": " + data.msg
                         )
                     )

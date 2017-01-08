@@ -61,3 +61,12 @@ io.on('connection', function(socket) {
     socket.broadcast.emit('offline', socket.handshake.session.u_id);
   });
 });
+
+/*io.on('new message', function(socket) {
+  var msg = {
+    id: socket.to,
+    sender: ,
+    msg: socket.msg
+  };
+  socket.broadcast.emit('broadcast msg',);
+}*/
