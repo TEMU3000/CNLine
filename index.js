@@ -3,7 +3,12 @@ var app = express();
 var bodyParser = require('body-parser');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var session = require('express-session');
+var session = require('express-session')({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+});
+var sharedsession = require('express-socket.io-session');
 
 var port = 3000;
 server.listen(port, function () {
@@ -24,11 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.set('view engine', 'ejs');
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true
-}));
+app.use(session);
+io.use(sharedsession(session));
 
 // Routing
 var login = require('./routes/login');
@@ -40,4 +42,6 @@ app.use('/register', register);
 var chat = require('./routes/chat');
 app.use('/chat', chat);
 
-io.on('connection', function(){ /* … */ });
+io.on('connection', function(socket) {
+  console.log(socket.handshake.session.u_id);
+});
