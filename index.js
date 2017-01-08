@@ -61,6 +61,7 @@ io.on('connection', function(socket) {
 
   console.log('user ' + socket.handshake.session.u_id + ' has connected.');
   console.log('socket.id = ' + socket.id);
+
   user_connected[socket.handshake.session.u_id] = true;
   user_socket_id[socket.handshake.session.u_id] = socket.id;
 
@@ -73,6 +74,7 @@ io.on('connection', function(socket) {
     if (!socket.handshake.session.u_id) { return; }
 
     console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
+
     delete user_connected[socket.handshake.session.u_id];
     delete user_socket_id[socket.handshake.session.u_id];
 
@@ -82,6 +84,8 @@ io.on('connection', function(socket) {
   socket.on('open room', function(uid) {
     if (!socket.handshake.session.u_id) { return; }
 
+    console.log('user ' + socket.handshake.session.u_id + ' open room to ' + uid + '.');
+
     var table_name = create_table_name(socket.handshake.session.u_id, uid);
 
     db.serialize(function() {
@@ -90,9 +94,6 @@ io.on('connection', function(socket) {
     var query = 'SELECT msg FROM ' + table_name;
     db.serialize(function() {
       db.all(query, function(err, rows) {
-        if (err) {
-          console.log(err);
-        }
         socket.emit('log response', { uid: uid, log_msg: rows })
       });
     });
@@ -101,15 +102,17 @@ io.on('connection', function(socket) {
   socket.on('new message', function(data) {
     if (!socket.handshake.session.u_id) { return; }
 
-    var to_socket_id = user_socket_id[data['to']];
+    console.log('user ' + socket.handshake.session.u_id + ' new message to ' + data.to + '.');
+
+    var to_socket_id = user_socket_id[data.to];
     if (to_socket_id) {
-      socket.broadcast.to(to_socket_id).emit('broadcast msg', { sender_id: socket.handshake.session.u_id, msg: data['msg'] });
+      socket.broadcast.to(to_socket_id).emit('broadcast msg', { sender_id: socket.handshake.session.u_id, msg: data.msg });
     }
 
-    var table_name = create_table_name(socket.handshake.session.u_id, data['to']);
+    var table_name = create_table_name(socket.handshake.session.u_id, data.to);
     var query = 'INSERT INTO ' + table_name + ' (msg) VALUES (?)';
     db.serialize(function() {
-      db.run(query, [data['msg']]);
+      db.run(query, [data.msg]);
     });
   });
 });
