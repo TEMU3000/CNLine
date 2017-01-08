@@ -60,6 +60,9 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function(){
     console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
+    delete user_connected[socket.handshake.session.u_id];
+    delete user_socket_id[socket.handshake.session.u_id];
+
     socket.broadcast.emit('offline', socket.handshake.session.u_id);
   });
 });
