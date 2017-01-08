@@ -22,7 +22,7 @@
     </div>
     <div class="main" id="chatRoom">
         <div id="roomName" style="height:30px; width:100%; border-bottom:2px solid; text-align:center; font-size:1.25em"></div>
-        <div style="position:absolute; top:40px; bottom:60px; width:100%; overflow:auto;">
+        <div id="chatContentDiv" style="position:absolute; top:40px; bottom:60px; width:100%; overflow:auto;">
             <table id="chatContent" style="padding-left:50px;">
             </table>
         </div>
@@ -54,6 +54,7 @@
             $("#chatRoom").hide();
             $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
+            socket.emit('open room', opened_id);
         }
         $("#message").keydown( function(event){
             if (event.keyCode == 13) {
@@ -69,6 +70,8 @@
                         )
                     )
                 );
+                var objDiv = document.getElementById("chatContentDiv");
+                objDiv.scrollTop = objDiv.scrollHeight;
                 var new_message = {
                     to: opened_id,
                     msg: $("#user").text() + ": " + $("#message").val()
@@ -87,6 +90,8 @@
                         )
                     )
                 );
+                var objDiv = document.getElementById("chatContentDiv");
+                objDiv.scrollTop = objDiv.scrollHeight;
             }
         });
         socket.on('online', function (id) {
@@ -96,6 +101,21 @@
         socket.on('offline', function (id) {
             $("#"+id).removeClass('name_online');
             $("#"+id).addClass('name_offline');
+        });
+        socket.on('log response', function (data) {
+            if(data.uid == opened_id){
+                data.log_msg.forEach(function(msg) {
+                    $("#chatContent").append(
+                        $("<tr>").append(
+                            $("<td>").text(
+                                $("#user").text() + ": " + $("#message").val()
+                            )
+                        )
+                    );
+                });
+                var objDiv = document.getElementById("chatContentDiv");
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
         });
     </script>
 </body>
