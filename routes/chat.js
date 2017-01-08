@@ -15,7 +15,7 @@ router.get('/', function(req, res){
         username = row[0].username;
       });
     });
-    var query = 'SELECT username FROM users';
+    var query = 'SELECT id, username FROM users';
     db.serialize(function() {
       db.all(query, function(err, rows) {
         res.render('chat', { title: 'chat', userlist: rows , username: username});
