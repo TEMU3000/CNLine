@@ -104,11 +104,11 @@
         });
         socket.on('log response', function (data) {
             if(data.uid == opened_id){
-                data.log_msg.forEach(function(msg) {
+                data.log_msg.forEach(function(obj) {
                     $("#chatContent").append(
                         $("<tr>").append(
                             $("<td>").text(
-                                $("#user").text() + ": " + $("#message").val()
+                               obj.msg
                             )
                         )
                     );
