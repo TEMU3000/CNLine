@@ -89,5 +89,13 @@
                     );
             }
         });
+        socket.on('online', function (id) {
+            $("#"+id).removeClass('name_offline');
+            $("#"+id).addClass('name_online');
+        });
+        socket.on('offline', function (id) {
+            $("#"+id).removeClass('name_online');
+            $("#"+id).addClass('name_offline');
+        });
     </script>
 </body>
