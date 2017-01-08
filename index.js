@@ -52,7 +52,7 @@ io.on('connection', function(socket) {
   user_socket_id[socket.handshake.session.u_id] = socket.id;
 
   socket.broadcast.emit('online', socket.handshake.session.u_id);
-  for k in Object.keys(user_connected) {
+  for (k in Object.keys(user_connected)) {
     socket.emit('online', k);
   }
 
