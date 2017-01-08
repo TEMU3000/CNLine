@@ -48,51 +48,59 @@ user_socket_id = {};
 function create_table_name(id1, id2) {
   var table_name;
   if (id1 < id2) {
-    table_name = id1 + '_' + id2;
+    table_name = 'r' + id1 + '_' + id2;
   } else {
-    table_name = id2 + '_' + id1;
+    table_name = 'r' + id2 + '_' + id1;
   }
 
   return table_name;
 }
 
 io.on('connection', function(socket) {
-  if (socket.handshake.session.u_id) {
-    console.log('user ' + socket.handshake.session.u_id + ' has connected.');
-    console.log('socket.id = ' + socket.id);
-    user_connected[socket.handshake.session.u_id] = true;
-    user_socket_id[socket.handshake.session.u_id] = socket.id;
+  if (!socket.handshake.session.u_id) { return; }
 
-    socket.broadcast.emit('online', socket.handshake.session.u_id);
-    for (var key in user_connected) {
-      socket.emit('online', key);
-    }
+  console.log('user ' + socket.handshake.session.u_id + ' has connected.');
+  console.log('socket.id = ' + socket.id);
+  user_connected[socket.handshake.session.u_id] = true;
+  user_socket_id[socket.handshake.session.u_id] = socket.id;
+
+  socket.broadcast.emit('online', socket.handshake.session.u_id);
+  for (var key in user_connected) {
+    socket.emit('online', key);
   }
 
   socket.on('disconnect', function() {
-    if (socket.handshake.session.u_id) {
-      console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
-      delete user_connected[socket.handshake.session.u_id];
-      delete user_socket_id[socket.handshake.session.u_id];
+    if (!socket.handshake.session.u_id) { return; }
 
-      socket.broadcast.emit('offline', socket.handshake.session.u_id);
-    }
+    console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
+    delete user_connected[socket.handshake.session.u_id];
+    delete user_socket_id[socket.handshake.session.u_id];
+
+    socket.broadcast.emit('offline', socket.handshake.session.u_id);
   });
 
   socket.on('open room', function(uid) {
+    if (!socket.handshake.session.u_id) { return; }
+
     var table_name = create_table_name(socket.handshake.session.u_id, uid);
 
     db.serialize(function() {
       db.run('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id integer primary key, msg varchar(320))');
-
-      var query = 'SELECT msg FROM ' + table_name;
+    });
+    var query = 'SELECT msg FROM ' + table_name;
+    db.serialize(function() {
       db.all(query, function(err, rows) {
+        if (err) {
+          console.log(err);
+        }
         socket.emit('log response', { uid: uid, log_msg: rows })
       });
     });
   });
 
   socket.on('new message', function(data) {
+    if (!socket.handshake.session.u_id) { return; }
+
     var to_socket_id = user_socket_id[data['to']];
     if (to_socket_id) {
       socket.broadcast.to(to_socket_id).emit('broadcast msg', { sender_id: socket.handshake.session.u_id, msg: data['msg'] });
