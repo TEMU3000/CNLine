@@ -12,10 +12,10 @@
         <table width="100%">
             <% for( var idx = 0; idx < userlist.length; idx++) { %>
                 <% if(idx % 2 === 0) { %>
-                    <tr><td class="name_even name_online"  onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_even name_offline"  onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
                 <% if(idx % 2 === 1) { %>
-                    <tr><td class="name_odd name_online" onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
+                    <tr><td class="name_odd name_offline" onclick=openRoom(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
                 <% } %>
             <% } %>
         </table>
@@ -81,12 +81,12 @@
         socket.on('broadcast msg', function (data) {
             if(data.id == opened_id && data.sender != $("#user")){
                 $("#chatContent").append(
-                        $("<tr>").append(
-                            $("<td>").append(
-                                data.sender + ": " + data.msg
-                            )
+                    $("<tr>").append(
+                        $("<td>").append(
+                            data.sender + ": " + data.msg
                         )
-                    );
+                    )
+                );
             }
         });
         socket.on('online', function (id) {
