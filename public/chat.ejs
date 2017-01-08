@@ -64,7 +64,7 @@
             if ($("#message").val() != "") {
                 $("#chatContent").append(
                     $("<tr>").append(
-                        $("<td>").append(
+                        $("<td>").text(
                             $("#user").text() + ": " + $("#message").val()
                         )
                     )
@@ -78,5 +78,16 @@
                 $("#message").val("");
             }
         }
+        socket.on('broadcast msg', function (data) {
+            if(data.id == opened_id && data.sender != $("#user")){
+                $("#chatContent").append(
+                        $("<tr>").append(
+                            $("<td>").append(
+                                data.sender + ": " + data.msg
+                            )
+                        )
+                    );
+            }
+        });
     </script>
 </body>
