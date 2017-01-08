@@ -58,11 +58,20 @@ io.on('connection', function(socket) {
     }
   }
 
-  socket.on('disconnect', function(){
-    console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
-    delete user_connected[socket.handshake.session.u_id];
-    delete user_socket_id[socket.handshake.session.u_id];
+  socket.on('disconnect', function() {
+    if (socket.handshake.session.u_id) {
+      console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
+      delete user_connected[socket.handshake.session.u_id];
+      delete user_socket_id[socket.handshake.session.u_id];
 
-    socket.broadcast.emit('offline', socket.handshake.session.u_id);
+      socket.broadcast.emit('offline', socket.handshake.session.u_id);
+    }
+  });
+
+  socket.on('new message', function(data) {
+    var to_socket_id = user_socket_id[data['to']];
+    if (to_socket_id) {
+      socket.broadcast.to(to_socket_id).emit('broadcast msg', { sender_id: socket.handshake.session.u_id, msg: data['msg'] });
+    }
   });
 });
