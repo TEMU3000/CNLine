@@ -43,8 +43,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
+        var opened_id = -1;
         function openRoom(group) {
             console.log(group.id);
+            opened_id = group.id;
             if($("#roomName").text() == group.innerHTML){
                 return;
             }
@@ -68,11 +70,10 @@
                     )
                 );
                 var new_message = {
-                    from: $("#user").text(),
-                    to: $("#roomName").text(),
+                    to: opened_id,
                     msg: $("#message").val()
                 };
-                //console.log(new_message);
+                console.log(new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
             }
