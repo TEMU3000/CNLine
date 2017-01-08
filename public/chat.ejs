@@ -34,7 +34,7 @@
                         <input class="upload" type="file" value="檔案" multiple>
                     </div>
                 </td>
-                <td style="width:100%;"><input id="message" type="text" autofocus style="width:100%; font-size:1.25em;"></td>
+                <td style="width:100%;"><input id="message" type="text" autofocus style="width:100%; font-size:1.25em;" maxlength="100"></td>
                 <td><input type="button" value="傳送" onclick=sendMsg() style="font-size:1.25em; margin:10px;"></td>
             </tr>
         </table>
@@ -71,7 +71,7 @@
                 );
                 var new_message = {
                     to: opened_id,
-                    msg: $("#message").val()
+                    msg: $("#user").text() + ": " + $("#message").val()
                 };
                 console.log(new_message);
                 socket.emit('new message', new_message);
@@ -79,11 +79,11 @@
             }
         }
         socket.on('broadcast msg', function (data) {
-            if(data.id == opened_id && data.sender != $("#user")){
+            if(data.sender_id == opened_id && $("#"+data.sender_id).text() != $("#user")){
                 $("#chatContent").append(
                     $("<tr>").append(
                         $("<td>").text(
-                            data.sender + ": " + data.msg
+                            data.msg
                         )
                     )
                 );
