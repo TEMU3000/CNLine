@@ -2,7 +2,7 @@
 ## Send message
 Client send an object
 ```bash
-  new message{
+  'new message': {
     to: (destination_userid),
     msg: (msg)
   }
@@ -10,11 +10,13 @@ Client send an object
 
 Server send an object
 ```bash
-  broadcast msg{
+  'broadcast msg': {
     id,
     sender,
     msg
   }
+  'online': u_id
+  'offline': u_id
 ```
 
 ## On client connect

@@ -42,6 +42,18 @@ app.use('/register', register);
 var chat = require('./routes/chat');
 app.use('/chat', chat);
 
+user_connected = {};
+user_socket_id = {};
+
 io.on('connection', function(socket) {
-  console.log(socket.handshake.session.u_id);
+  console.log('user ' + socket.handshake.session.u_id + ' has connected.');
+  console.log('socket.id = ' + socket.id);
+  user_connected[socket.handshake.session.u_id] = true;
+  user_socket_id[socket.handshake.session.u_id] = socket.id;
+  socket.broadcast.emit('online', socket.handshake.session.u_id);
+
+  socket.on('disconnect', function(){
+    console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
+    socket.broadcast.emit('offline', socket.handshake.session.u_id);
+  });
 });
