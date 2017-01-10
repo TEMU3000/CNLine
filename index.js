@@ -42,7 +42,6 @@ app.use('/register', register);
 var chat = require('./routes/chat');
 app.use('/chat', chat);
 
-user_connected = {};
 user_socket_id = {};
 
 function create_table_name(id1, id2) {
@@ -62,11 +61,10 @@ io.on('connection', function(socket) {
   console.log('user ' + socket.handshake.session.u_id + ' has connected.');
   console.log('socket.id = ' + socket.id);
 
-  user_connected[socket.handshake.session.u_id] = true;
   user_socket_id[socket.handshake.session.u_id] = socket.id;
 
   socket.broadcast.emit('online', socket.handshake.session.u_id);
-  for (var key in user_connected) {
+  for (var key in user_socket_id) {
     socket.emit('online', key);
   }
 
@@ -75,7 +73,6 @@ io.on('connection', function(socket) {
 
     console.log('user ' + socket.handshake.session.u_id + ' has disconnected.');
 
-    delete user_connected[socket.handshake.session.u_id];
     delete user_socket_id[socket.handshake.session.u_id];
 
     socket.broadcast.emit('offline', socket.handshake.session.u_id);
