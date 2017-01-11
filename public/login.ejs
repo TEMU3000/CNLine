@@ -1,7 +1,13 @@
 <%include header%>
 <body>
-  <p align="center">CNLine</p>
-    <form align="center" action="/login" method="post">
+  <style>
+    body {
+        background-image: url("bg_login.png");
+        background-repeat: no-repeat;
+    }
+  </style>
+  <p align="center" style="color:white;font-weight:bold;font-size:32px;">CNLine</p>
+    <form align="center" action="/login" method="post" style="color:white;font-weight:bold;font-size:24px;">
         帳號:&nbsp;<input type="text" name="username"><br>
         密碼:&nbsp;<input type="password" name="password"><br>
         <input type='checkbox' name='auto_login'>自動登入<br>
