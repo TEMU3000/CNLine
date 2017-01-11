@@ -18,6 +18,7 @@
   "homepage": "https://github.com/TEMU3000/CNLine#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "delivery": "0.0.6",
     "ejs": "^2.5.5",
     "express": "^4.14.0",
     "express-session": "^1.14.2",

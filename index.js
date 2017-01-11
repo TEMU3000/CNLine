@@ -9,6 +9,8 @@ var session = require('express-session')({
   saveUninitialized: true
 });
 var sharedsession = require('express-socket.io-session');
+var dl = require('delivery');
+var fs = require('fs');
 
 var port = 3000;
 server.listen(port, function () {
@@ -112,4 +114,25 @@ io.on('connection', function(socket) {
       db.run(query, [data.msg]);
     });
   });
+
+  var delivery = dl.listen(socket);
+  delivery.on('receive.success', function(file) {
+    fs.writeFile('./files_temp/' + file.name, file.buffer, function(err) {
+      if (err) {
+        console.log('File could not be saved. - ' + file.name);
+      } else {
+        console.log('File saved. - ' + file.name);
+      }
+    });
+  });
+
+  // delivery.send({
+  //   name: 'sample-image.jpg',
+  //   path : './sample-image.jpg',
+  //   params: {foo: 'bar'}
+  // });
+  //
+  // delivery.on('send.success',function(file){
+  //   console.log('File successfully sent to client!');
+  // });
 });
