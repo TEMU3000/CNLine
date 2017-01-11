@@ -117,19 +117,25 @@
             console.log(fileObj.name + " file sent successfully. uid:" + fileObj.uid);
             var message = {
                 to: opened_id,
-                fileUID: fileObj.uid
+                filename: fileObj.name
             };
             console.log("file sent: ", message);
-            socket.emit('file sent', message, function() {
+            socket.emit('file sent', message, function(ack) {
+              if (!ack.online)
+                alert($("#"+opened_id).text() + ' 不在線上');
             });
         });
         socket.on('file incoming', function (obj) {
             console.log(obj);
             console.log("Download file request from " + $("#"+obj.sender_id).innerHTML);
-            if (confirm($("#"+obj.sender_id).text() + '傳送檔案' + obj.fileUID + '給你，確認接收?')) {
+            if (confirm($("#"+obj.sender_id).text() + ' 傳送檔案 ' + obj.filename + ' 給你，確認接收?')) {
                 // Save it!
             } else {
-                // Do nothing!
+                var message = {
+                  ok: false,
+                  filename: obj.filename
+                };
+                socket.emit('file confirm', message);
             }
         });
         socket.on('broadcast msg', function (data) {

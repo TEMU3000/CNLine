@@ -34,21 +34,21 @@ Client ack send success
 ```bash
     'file sent': {
         to,
-        fileUID
+        filename
     }
 ```
 Client want this file or not
 ```bash
     'file confirm': {
         ok (true or false),
-        fileUID
+        filename
     }
 ```
 Server: u got a new file!
 ```bash
   'file incoming': {
       sender_id,
-      fileUID
+      filename
   }
 ```
 

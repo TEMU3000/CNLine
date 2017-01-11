@@ -115,27 +115,6 @@ io.on('connection', function(socket) {
     });
   });
 
-  socket.on('file sent', function(data, callback) {
-    if (!socket.handshake.session.u_id) { return; }
-
-    console.log('user ' + socket.handshake.session.u_id + ' transfer file to ' + data.to + '.');
-
-    var to_socket_id = user_socket_id[data.to];
-    if (to_socket_id) {
-      socket.broadcast.to(to_socket_id).emit('file incoming', { sender_id: socket.handshake.session.u_id });
-
-      // var table_name = create_table_name(socket.handshake.session.u_id, data.to);
-      // var query = 'INSERT INTO ' + table_name + ' (msg) VALUES (?)';
-      // db.serialize(function() {
-      //   db.run(query, [data.msg]);
-      // });
-
-      callback({ success: true });
-    } else {
-      callback({ success: false });
-    }
-  });
-
   var delivery = dl.listen(socket);
   delivery.on('receive.success', function(file) {
     fs.writeFile('./files_temp/' + file.name, file.buffer, function(err) {
@@ -147,6 +126,10 @@ io.on('connection', function(socket) {
     });
   });
 
+  delivery.on('send.success',function(file) {
+    console.log('File successfully sent to client! - ' + file.name);
+  });
+
   // delivery.send({
   //   name: 'sample-image.jpg',
   //   path : './sample-image.jpg',
@@ -156,4 +139,42 @@ io.on('connection', function(socket) {
   // delivery.on('send.success',function(file){
   //   console.log('File successfully sent to client!');
   // });
+
+  socket.on('file sent', function(data, callback) {
+    if (!socket.handshake.session.u_id) { return; }
+
+    console.log('user ' + socket.handshake.session.u_id + ' transfer file to ' + data.to + '.');
+
+    var to_socket_id = user_socket_id[data.to];
+    if (to_socket_id) {
+      socket.broadcast.to(to_socket_id).emit('file incoming', { sender_id: socket.handshake.session.u_id, filename: data.filename });
+
+      callback({ online: true });
+    } else {
+      fs.unlink('./files_temp/' + data.filename);
+
+      console.log('File deleted. - ' + data.filename);
+
+      callback({ online: false });
+    }
+  });
+
+  socket.on('file confirm', function(data) {
+    if (!socket.handshake.session.u_id) { return; }
+
+    if(data.ok) {
+      console.log('user ' + socket.handshake.session.u_id + ' confirm file.');
+
+      delivery.send({
+        name: data.filename,
+        path : './files_temp/' + data.fileUID,
+      });
+    } else {
+      console.log('user ' + socket.handshake.session.u_id + ' reject file.');
+
+      fs.unlink('./files_temp/' + data.filename);
+
+      console.log('File deleted. - ' + data.filename);
+    }
+  });
 });
