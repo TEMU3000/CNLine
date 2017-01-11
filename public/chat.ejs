@@ -41,8 +41,10 @@
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/delivery.js"></script>
     <script>
         var socket = io();
+        var delivery = new Delivery(socket);
         var opened_id = -1;
         function openRoom(group) {
             console.log(group.id);
@@ -79,8 +81,14 @@
                 console.log(new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
+
+                var file = $("input[type=file]")[0].files[0];
+                delivery.send(file);
             }
         }
+        delivery.on("send.success", function(fileUID) {
+            console.log("file sent successfully.");
+        });
         socket.on('broadcast msg', function (data) {
             if(data.sender_id == opened_id && $("#"+data.sender_id).text() != $("#user")){
                 $("#chatContent").append(
