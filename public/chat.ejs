@@ -101,7 +101,7 @@
                     to: opened_id,
                     msg: $("#user").text() + ": " + $("#message").val()
                 };
-                console.log("new message: " + new_message);
+                console.log("new message: ", new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
             }
@@ -119,14 +119,14 @@
                 to: opened_id,
                 fileUID: fileObj.uid
             };
-            console.log("file sent: " + message);
+            console.log("file sent: ", message);
             socket.emit('file sent', message, function() {
             });
         });
         socket.on('file incoming', function (obj) {
             console.log(obj);
             console.log("Download file request from " + $("#"+obj.sender_id).innerHTML);
-            if (confirm($("#"+obj.sender_id).innerHTML + '傳送檔案' + obj.fileUID + '給你，確認接收?')) {
+            if (confirm($("#"+obj.sender_id).text() + '傳送檔案' + obj.fileUID + '給你，確認接收?')) {
                 // Save it!
             } else {
                 // Do nothing!
