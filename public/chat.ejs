@@ -30,8 +30,9 @@
             <tr>
                 <td>
                     <div class="fileUpload">
-                        <span>檔案</span>
-                        <input id="file" class="upload" type="file" value="檔案" onchange=uploadFile() multiple>
+                        <span id="file_btn_txt">檔案</span>
+                        <input id="file" class="upload" type="file" onchange=fileUpload() multiple>
+                        <input id="file_cancel" class="cancel" type="button" onclick=fileCancel()>
                     </div>
                 </td>
                 <td style="width:100%;"><input id="message" type="text" autofocus style="width:100%; font-size:1.25em;" maxlength="100"></td>
@@ -58,15 +59,25 @@
             $("#chatRoom").show("fast");
             socket.emit('open room', opened_id);
         }
-        function uploadFile() {
+        function fileUpload() {
             var files = document.getElementById("file").files;
-            console.log(files);
             var names="";
             for(var i = 0; i < files.length; i++)  {
-                console.log(files[i].name);
-                names += files[i].name;
+                names += files[i].name + "; ";
             }
             $("#message").val(names);
+            $("#message").prop("disabled", true);
+            $("#file").hide();
+            $("#file_cancel").show();
+            $("#file_btn_txt").text("取消");
+        }
+        function fileCancel() {
+            $("#file").val("");
+            $("#message").prop("disabled", false);
+            $("#message").val("");
+            $("#file").show();
+            $("#file_cancel").hide();
+            $("#file_btn_txt").text("檔案");
         }
         $("#message").keydown( function(event){
             if (event.keyCode == 13) {
@@ -88,16 +99,16 @@
                     to: opened_id,
                     msg: $("#user").text() + ": " + $("#message").val()
                 };
-                console.log(new_message);
+                console.log("new message: " + new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
             }
             var files = document.getElementById("file").files;
             if(files.length > 0) {
-                for(var i = 0; i < files.length; i++)  {
+                for(var i = 0; i < files.length; i++) {
                     delivery.send(files[i]);
                 }
-                $("#file").val("");
+                fileCancel();
             }
         }
         delivery.on("send.success", function(fileUID) {
@@ -106,7 +117,7 @@
                 to: opened_id,
                 fileUID: fileUID
             };
-            console.log(new_message);
+            console.log("file sent: " + new_message);
             socket.emit('file sent', new_message, function() {
             });
         });
