@@ -57,6 +57,17 @@ input.upload {
     cursor: pointer;
     opacity: 0;
 }
+input.cancel {
+    position: absolute;
+    width: 100%;
+    top: 0; 
+    bottom: 0; 
+    right:0;
+    padding: 0;
+    cursor: pointer;
+    display: none;
+    opacity: 0;
+}
 
 .top { background: #C1FDF8; }
 .left { background: #B1EDE8; }
