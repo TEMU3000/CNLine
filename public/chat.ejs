@@ -31,7 +31,7 @@
                 <td>
                     <div class="fileUpload">
                         <span>檔案</span>
-                        <input class="upload" type="file" value="檔案" multiple>
+                        <input id="file" class="upload" type="file" value="檔案" onchange=uploadFile() multiple>
                     </div>
                 </td>
                 <td style="width:100%;"><input id="message" type="text" autofocus style="width:100%; font-size:1.25em;" maxlength="100"></td>
@@ -41,13 +41,13 @@
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/delivery.js"></script>
+    <script src="./js/delivery.js"></script>
     <script>
         var socket = io();
         var delivery = new Delivery(socket);
         var opened_id = -1;
         function openRoom(group) {
-            console.log(group.id);
+            console.log("open room " + group.id);
             opened_id = group.id;
             if($("#roomName").text() == group.innerHTML){
                 return;
@@ -57,6 +57,16 @@
             $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
             socket.emit('open room', opened_id);
+        }
+        function uploadFile() {
+            var files = document.getElementById("file").files;
+            console.log(files);
+            var names="";
+            for(var i = 0; i < files.length; i++)  {
+                console.log(files[i].name);
+                names += files[i].name;
+            }
+            $("#message").val(names);
         }
         $("#message").keydown( function(event){
             if (event.keyCode == 13) {
@@ -81,13 +91,27 @@
                 console.log(new_message);
                 socket.emit('new message', new_message);
                 $("#message").val("");
-
-                var file = $("input[type=file]")[0].files[0];
-                delivery.send(file);
+            }
+            var files = document.getElementById("file").files;
+            if(files.length > 0) {
+                for(var i = 0; i < files.length; i++)  {
+                    delivery.send(files[i]);
+                }
+                $("#file").val("");
             }
         }
         delivery.on("send.success", function(fileUID) {
-            console.log("file sent successfully.");
+            console.log(fileUID + "file sent successfully.");
+            var new_message = {
+                to: opened_id,
+                fileUID: fileUID
+            };
+            console.log(new_message);
+            socket.emit('file sent', new_message, function() {
+            });
+        });
+        socket.on('file incoming', function (sender_id) {
+
         });
         socket.on('broadcast msg', function (data) {
             if(data.sender_id == opened_id && $("#"+data.sender_id).text() != $("#user")){

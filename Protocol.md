@@ -29,6 +29,29 @@ Server send an object
   'online': u_id
   'offline': u_id
 ```
+## Send file
+Client ack send success
+```bash
+    'file sent': {
+        to,
+        fileUID
+    }
+```
+Client want this file or not
+```bash
+    'file confirm': {
+        ok (true or false),
+        fileUID
+    }
+```
+Server: u got a new file!
+```bash
+  'file incoming': {
+      sender_id,
+      fileUID
+  }
+```
+
 # Non Socket.io protocol
 ## On client connect
 Server send a list
