@@ -50,6 +50,8 @@
         function openRoom(group) {
             console.log("open room " + group.id);
             opened_id = group.id;
+            $("#message").val("");
+            $("#file").val("");
             if($("#roomName").text() == group.innerHTML){
                 return;
             }
@@ -111,18 +113,24 @@
                 fileCancel();
             }
         }
-        delivery.on("send.success", function(fileUID) {
-            console.log(fileUID + "file sent successfully.");
-            var new_message = {
+        delivery.on("send.success", function(fileObj) {
+            console.log(fileObj.name + " file sent successfully. uid:" + fileObj.uid);
+            var message = {
                 to: opened_id,
-                fileUID: fileUID
+                fileUID: fileObj.uid
             };
-            console.log("file sent: " + new_message);
-            socket.emit('file sent', new_message, function() {
+            console.log("file sent: " + message);
+            socket.emit('file sent', message, function() {
             });
         });
-        socket.on('file incoming', function (sender_id) {
-
+        socket.on('file incoming', function (obj) {
+            console.log(obj);
+            console.log("Download file request from " + $("#"+obj.sender_id).innerHTML);
+            if (confirm($("#"+obj.sender_id).innerHTML + '傳送檔案' + obj.fileUID + '給你，確認接收?')) {
+                // Save it!
+            } else {
+                // Do nothing!
+            }
         });
         socket.on('broadcast msg', function (data) {
             if(data.sender_id == opened_id && $("#"+data.sender_id).text() != $("#user")){
