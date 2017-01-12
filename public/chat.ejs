@@ -125,11 +125,20 @@
                 alert($("#"+opened_id).text() + ' 不在線上');
             });
         });
+
         socket.on('file incoming', function (obj) {
             console.log(obj);
             console.log("Download file request from " + $("#"+obj.sender_id).innerHTML);
             if (confirm($("#"+obj.sender_id).text() + ' 傳送檔案 ' + obj.filename + ' 給你，確認接收?')) {
-                // Save it!
+                var message = {
+                  ok: true,
+                  filename: obj.filename
+                };
+                socket.emit('file confirm', message);
+
+                var url = window.location.href;
+                var arr = url.split('/');
+                window.open(arr[0] + '//' + arr[2] + '/download?filename=' + obj.filename);
             } else {
                 var message = {
                   ok: false,

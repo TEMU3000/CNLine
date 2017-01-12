@@ -44,6 +44,9 @@ app.use('/register', register);
 var chat = require('./routes/chat');
 app.use('/chat', chat);
 
+var download = require('./routes/download');
+app.use('/download', download);
+
 user_socket_id = {};
 
 function create_table_name(id1, id2) {
@@ -115,6 +118,8 @@ io.on('connection', function(socket) {
     });
   });
 
+
+  // File transfer
   var delivery = dl.listen(socket);
   delivery.on('receive.success', function(file) {
     fs.writeFile('./files_temp/' + file.name, file.buffer, function(err) {
@@ -125,20 +130,6 @@ io.on('connection', function(socket) {
       }
     });
   });
-
-  delivery.on('send.success',function(file) {
-    console.log('File successfully sent to client! - ' + file.name);
-  });
-
-  // delivery.send({
-  //   name: 'sample-image.jpg',
-  //   path : './sample-image.jpg',
-  //   params: {foo: 'bar'}
-  // });
-  //
-  // delivery.on('send.success',function(file){
-  //   console.log('File successfully sent to client!');
-  // });
 
   socket.on('file sent', function(data, callback) {
     if (!socket.handshake.session.u_id) { return; }
@@ -152,7 +143,6 @@ io.on('connection', function(socket) {
       callback({ online: true });
     } else {
       fs.unlink('./files_temp/' + data.filename);
-
       console.log('File deleted. - ' + data.filename);
 
       callback({ online: false });
@@ -164,16 +154,10 @@ io.on('connection', function(socket) {
 
     if(data.ok) {
       console.log('user ' + socket.handshake.session.u_id + ' confirm file.');
-
-      delivery.send({
-        name: data.filename,
-        path : './files_temp/' + data.fileUID,
-      });
     } else {
       console.log('user ' + socket.handshake.session.u_id + ' reject file.');
 
       fs.unlink('./files_temp/' + data.filename);
-
       console.log('File deleted. - ' + data.filename);
     }
   });
