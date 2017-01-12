@@ -52,6 +52,7 @@
             opened_id = group.id;
             $("#message").val("");
             $("#file").val("");
+            fileCancel();
             if($("#roomName").text() == group.innerHTML){
                 return;
             }
