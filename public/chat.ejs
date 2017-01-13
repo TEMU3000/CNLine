@@ -44,9 +44,10 @@
     <div id="groupCreate" class="center">
         <input class="close" type="button" value="X" onclick=groupCancel()> 
         <span style="position:absolute; top:10px; left:30px; font-size:1.2em;">按下左邊的人名加入或取消</span>
-        <ul id="groupMember" style="position:absolute; top:30px; list-style-type:none; font-size:1.2em;">
+        <ul id="groupMember" style="position:absolute;top:30px;bottom:30px; list-style-type:none; font-size:1.2em; overflow:auto">
             <li> <%= username %> </li>
         </ul>
+        <input id="groupName" class="groupName" type="text" value="輸入群組名稱">
         <input type="submit" value="確定" style="position:absolute; bottom:10px; right:10px; border-radius:10px;">
     </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
