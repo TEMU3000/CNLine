@@ -87,6 +87,7 @@
             $("#chatRoom").hide();
             $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
+            $("#"+group.id).removeClass('new_msg');
             socket.emit('open room', opened_id);
         }
         function fileUpload() {
@@ -207,6 +208,9 @@
                 );
                 var objDiv = document.getElementById("chatContentDiv");
                 objDiv.scrollTop = objDiv.scrollHeight;
+            }
+            if(data.sender_id != opened_id){
+                $("#"+data.sender_id).addClass('new_msg');
             }
         });
         socket.on('online', function (id) {
