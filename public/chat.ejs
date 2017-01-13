@@ -9,16 +9,20 @@
         <span style="float:right;">&nbsp;<input type="submit" value="登出" onclick="location.href='/login'"></span>
     </div>
     <div class="left">
-        <table width="100%">
-            <% for( var idx = 0; idx < userlist.length; idx++) { %>
-                <% if(idx % 2 === 0) { %>
-                    <tr><td class="name_even name_offline" onclick=userClick(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
+        <div style="overflow:auto;">
+            <table width="100%" style="padding-top:20px; padding-bottom:20px; border-bottom:1px solid;">
+                <% for( var idx = 0; idx < userlist.length; idx++) { %>
+                    <% if(idx % 2 === 0) { %>
+                        <tr><td class="name_even name_offline" onclick=userClick(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
+                    <% } %>
+                    <% if(idx % 2 === 1) { %>
+                        <tr><td class="name_odd name_offline" onclick=userClick(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
+                    <% } %>
                 <% } %>
-                <% if(idx % 2 === 1) { %>
-                    <tr><td class="name_odd name_offline" onclick=userClick(this) id=<%= userlist[idx].id %>><%= userlist[idx].username %></td></tr>
-                <% } %>
-            <% } %>
-        </table>
+            </table>
+            <table width="100%" style="padding-top:20px; padding-bottom:20px;">
+            </table>
+        </div>
         <input type="button" value="+" onclick=groupCreate() style="position:absolute; bottom:10px; right:10px; font-size:1.5em">
     </div>
     <div class="main" id="chatRoom">
