@@ -100,11 +100,37 @@ io.on('connection', function(socket) {
       });
     });
   });
+  
+  socket.on('open lobby', function() {
+    if (!socket.handshake.session.u_id) { return; }
+
+    console.log('user ' + socket.handshake.session.u_id + ' open lobby.');
+
+    var table_name = "lobby";
+
+    db.serialize(function() {
+      db.run('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id integer primary key, msg varchar(320))');
+    });
+    var query = 'SELECT msg FROM ' + table_name;
+    db.serialize(function() {
+      db.all(query, function(err, rows) {
+        socket.emit('log response', { uid: 0, log_msg: rows })
+      });
+    });
+  });
 
   socket.on('new message', function(data) {
     if (!socket.handshake.session.u_id) { return; }
 
     console.log('user ' + socket.handshake.session.u_id + ' new message to ' + data.to + '.');
+    if(data.to == 0){
+        socket.broadcast.emit('broadcast lobby msg', data.msg);
+        var query = 'INSERT INTO lobby (msg) VALUES (?)';
+        db.serialize(function() {
+          db.run(query, [data.msg]);
+        });
+        return;
+    }
 
     var to_socket_id = user_socket_id[data.to];
     if (to_socket_id) {

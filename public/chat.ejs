@@ -95,7 +95,24 @@
             $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
             $("#"+group.id).removeClass('new_msg');
+            $("#file").prop('disabled', false);
             socket.emit('open room', opened_id);
+        }
+        function openLobby() {
+            console.log("open lobby");
+            opened_id = 0;
+            $("#message").val("");
+            $("#file").val("");
+            fileCancel();
+            if($("#roomName").text() == "lobby"){
+                return;
+            }
+            $("#roomName").text("lobby");
+            $("#chatRoom").hide();
+            $("#chatContent tr").remove();
+            $("#chatRoom").show("fast");
+            $("#file").prop('disabled', true);
+            socket.emit('open lobby');
         }
         function fileUpload() {
             var files = document.getElementById("file").files;
@@ -246,6 +263,19 @@
             }
             if(data.sender_id != opened_id){
                 $("#"+data.sender_id).addClass('new_msg');
+            }
+        });
+        socket.on('broadcast lobby msg', function (msg) {
+            if(0 == opened_id){
+                $("#chatContent").append(
+                    $("<tr>").append(
+                        $("<td>").text(
+                            msg
+                        )
+                    )
+                );
+                var objDiv = document.getElementById("chatContentDiv");
+                objDiv.scrollTop = objDiv.scrollHeight;
             }
         });
         socket.on('online', function (id) {
