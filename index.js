@@ -60,6 +60,17 @@ function create_table_name(id1, id2) {
   return table_name;
 }
 
+function create_group_id(uid_list) {
+  uid_list = uid_list.sort(function(a, b) { return a - b; });
+
+  var group_id = 'g';
+  for (var i in uid_list) {
+    group_id += '_' + uid_list[i];
+  }
+
+  return group_id;
+}
+
 io.on('connection', function(socket) {
   if (!socket.handshake.session.u_id) { return; }
 
@@ -116,6 +127,32 @@ io.on('connection', function(socket) {
     db.serialize(function() {
       db.run(query, [data.msg]);
     });
+  });
+
+  socket.on('open group room', function(uid_list) {
+    if (!socket.handshake.session.u_id) { return; }
+
+    console.log('user ' + socket.handshake.session.u_id + ' open group room to ' + uid_list + '.');
+
+    for (var i in uid_list) {
+      var to_socket_id = user_socket_id[uid_list[i]];
+      if (to_socket_id) {
+        socket.broadcast.to(to_socket_id).emit('new group room', { sender_id: socket.handshake.session.u_id, uid_list: uid_list, group_id: create_group_id(uid_list) });
+      }
+    }
+  });
+
+  socket.on('new group message', function(data) {
+    if (!socket.handshake.session.u_id) { return; }
+
+    console.log('user ' + socket.handshake.session.u_id + ' new group message to ' + data.to_list + '.');
+
+    for (var i in data.to_list) {
+      var to_socket_id = user_socket_id[data.to_list[i]];
+      if (to_socket_id) {
+        socket.broadcast.to(to_socket_id).emit('broadcast group msg', { group_id: data.group_id, msg: data.msg });
+      }
+    }
   });
 
 

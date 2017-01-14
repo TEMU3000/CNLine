@@ -51,6 +51,40 @@ Server: u got a new file!
       filename
   }
 ```
+## Group related
+Client create group room
+```bash
+    'open group room': {
+      uid_list: [user_id list]
+    }
+```
+
+Server: u have a new group room!
+```bash
+    'new group room': {
+      sender_id,
+      uid_list: [user_id list],
+      group_id
+    }
+```
+
+Client send group message
+```bash
+  'new group message': {
+    to_list: [to user_id list],
+    group_id: (to group_id),
+    msg: (msg "bear: 123")
+  }
+```
+
+Server send group message
+```bash
+  'broadcast group msg': {
+    group_id,
+    msg
+  }
+```
+
 
 # Non Socket.io protocol
 ## On client connect
