@@ -20,7 +20,7 @@
                     <% } %>
                 <% } %>
             </table>
-            <table width="100%" style="padding-top:20px; padding-bottom:20px;">
+            <table id="groupList" width="100%" style="padding-top:20px; padding-bottom:20px;">
             </table>
         </div>
         <input type="button" value="lobby" onclick=openLobby() style="position:absolute; bottom:10px; left:10px; font-size:1.5em">
@@ -67,6 +67,7 @@
         var opened_id = -1;
         var state = "chatting"; // chatting or grouping or sending
         var sendingQueue = new Array();
+        var groupMember = [];
 
         function userClick(user) {
             if (state === "chatting") {
@@ -177,6 +178,13 @@
             }
         }
         function groupCreate() {
+            $("#groupMember").empty();
+            groupMember = [];
+            var tmp_li = $("<li>").text("<%= username %>");
+            tmp_li.attr("id" ,"gm_" + <%= user_id %>);
+            $("#groupMember").append(tmp_li);
+            groupMember.push("<%= user_id %>");
+
             $("#groupCreate").show();
             state = "grouping";
         }
@@ -185,7 +193,11 @@
             state = "chatting";
         }
         function groupBuild(){
-            //socket.emit();
+            var message = {
+                uid_list: groupMember,
+                group_name: $("#groupName").val() 
+            };
+            socket.emit("open group room", message);
             $("#groupCreate").hide();
             state = "chatting";
         }
@@ -195,13 +207,24 @@
                 return ;
             if ($("#gm_"+id).length > 0) {
                 $("#gm_"+id).remove();
+                groupMember.splice(groupMember.indexOf(id), 1);
             }
             else {
                 var tmp_li = $("<li>").text(name);
                 tmp_li.attr("id" ,"gm_" + id);
                 $("#groupMember").append(tmp_li);
+                groupMember.push(id);
             }
         }
+        function groupListUpdate(group_id, group_name) {
+            var tmp_td = $("<td>").text(group_name);
+            tmp_td.prop("id", group_id);
+            tmp_td.prop("class", "name_online name_odd");
+            $("#groupList").append(
+                $("<tr>").append(tmp_td)
+            );
+        }
+
         delivery.on("send.success", function(fileObj) {
             console.log(fileObj.name + " file sent successfully. uid:" + fileObj.uid);
             var message = {
@@ -300,6 +323,10 @@
                 var objDiv = document.getElementById("chatContentDiv");
                 objDiv.scrollTop = objDiv.scrollHeight;
             }
+        });
+        socket.on('new group room', function(data) {
+            console.log("new group room", data);
+            groupListUpdate(data.group_id, data.group_name);
         });
     </script>
 </body>
