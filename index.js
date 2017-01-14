@@ -166,6 +166,7 @@ io.on('connection', function(socket) {
         socket.broadcast.to(to_socket_id).emit('new group room', { sender_id: socket.handshake.session.u_id, uid_list: data.uid_list, group_id: create_group_id(data.uid_list), group_name: data.group_name });
       }
     }
+    socket.emit('new group room', {sender_id: socket.handshake.session.u_id, uid_list: data.uid_list, group_id: create_group_id(data.uid_list), group_name: data.group_name });
   });
 
   socket.on('new group message', function(data) {
