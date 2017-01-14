@@ -111,7 +111,7 @@ io.on('connection', function(socket) {
       });
     });
   });
-  
+
   socket.on('open lobby', function() {
     if (!socket.handshake.session.u_id) { return; }
 
@@ -155,15 +155,15 @@ io.on('connection', function(socket) {
     });
   });
 
-  socket.on('open group room', function(uid_list) {
+  socket.on('open group room', function(data) {
     if (!socket.handshake.session.u_id) { return; }
 
-    console.log('user ' + socket.handshake.session.u_id + ' open group room to ' + uid_list + '.');
+    console.log('user ' + socket.handshake.session.u_id + ' open group room to ' + data.uid_list + '.');
 
-    for (var i in uid_list) {
-      var to_socket_id = user_socket_id[uid_list[i]];
+    for (var i in data.uid_list) {
+      var to_socket_id = user_socket_id[data.uid_list[i]];
       if (to_socket_id) {
-        socket.broadcast.to(to_socket_id).emit('new group room', { sender_id: socket.handshake.session.u_id, uid_list: uid_list, group_id: create_group_id(uid_list) });
+        socket.broadcast.to(to_socket_id).emit('new group room', { sender_id: socket.handshake.session.u_id, uid_list: data.uid_list, group_id: create_group_id(data.uid_list), group_name: data.group_name });
       }
     }
   });
