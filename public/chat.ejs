@@ -23,6 +23,7 @@
             <table width="100%" style="padding-top:20px; padding-bottom:20px;">
             </table>
         </div>
+        <input type="button" value="lobby" onclick=openLobby() style="position:absolute; bottom:10px; left:10px; font-size:1.5em">
         <input type="button" value="+" onclick=groupCreate() style="position:absolute; bottom:10px; right:10px; font-size:1.5em">
     </div>
     <div class="main" id="chatRoom">
@@ -52,7 +53,7 @@
             <li> <%= username %> </li>
         </ul>
         <input id="groupName" class="groupName" type="text" value="輸入群組名稱">
-        <input type="submit" value="確定" style="position:absolute; bottom:10px; right:10px; border-radius:10px;">
+        <input type="button" value="確定" onclick=groupBuild() style="position:absolute; bottom:10px; right:10px; border-radius:10px;">
     </div>
     <div id="fileSending" class="center">
         <div style="margin:auto; text-align:center; font-size:3em;">傳送中....</div>
@@ -94,7 +95,24 @@
             $("#chatContent tr").remove();
             $("#chatRoom").show("fast");
             $("#"+group.id).removeClass('new_msg');
+            $("#file").prop('disabled', false);
             socket.emit('open room', opened_id);
+        }
+        function openLobby() {
+            console.log("open lobby");
+            opened_id = 0;
+            $("#message").val("");
+            $("#file").val("");
+            fileCancel();
+            if($("#roomName").text() == "lobby"){
+                return;
+            }
+            $("#roomName").text("lobby");
+            $("#chatRoom").hide();
+            $("#chatContent tr").remove();
+            $("#chatRoom").show("fast");
+            $("#file").prop('disabled', true);
+            socket.emit('open lobby');
         }
         function fileUpload() {
             var files = document.getElementById("file").files;
@@ -163,6 +181,11 @@
             state = "grouping";
         }
         function groupCancel() {
+            $("#groupCreate").hide();
+            state = "chatting";
+        }
+        function groupBuild(){
+            //socket.emit();
             $("#groupCreate").hide();
             state = "chatting";
         }
@@ -240,6 +263,19 @@
             }
             if(data.sender_id != opened_id){
                 $("#"+data.sender_id).addClass('new_msg');
+            }
+        });
+        socket.on('broadcast lobby msg', function (msg) {
+            if(0 == opened_id){
+                $("#chatContent").append(
+                    $("<tr>").append(
+                        $("<td>").text(
+                            msg
+                        )
+                    )
+                );
+                var objDiv = document.getElementById("chatContentDiv");
+                objDiv.scrollTop = objDiv.scrollHeight;
             }
         });
         socket.on('online', function (id) {
