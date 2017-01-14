@@ -18,7 +18,7 @@ router.get('/', function(req, res){
     var query = 'SELECT id, username FROM users';
     db.serialize(function() {
       db.all(query, function(err, rows) {
-        res.render('chat', { title: 'chat', userlist: rows , username: username});
+        res.render('chat', { title: 'chat', userlist: rows , username: username, user_id: req.session.u_id });
       });
     });
   } else {
