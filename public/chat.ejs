@@ -197,6 +197,7 @@
                 uid_list: groupMember,
                 group_name: $("#groupName").val() 
             };
+            console.log("open group room", message);
             socket.emit("open group room", message);
             $("#groupCreate").hide();
             state = "chatting";
@@ -220,6 +221,7 @@
             var tmp_td = $("<td>").text(group_name);
             tmp_td.prop("id", group_id);
             tmp_td.prop("class", "name_online name_odd");
+            tmp_td.click(userClick);
             $("#groupList").append(
                 $("<tr>").append(tmp_td)
             );
